@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OBMC Student Portal</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root { --obmc-blue: #002d62; --accent-blue: #007bff; }
+        body { background-color: #f4f7f9; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+        
+       
+        .navbar { background-color: white !important; border-bottom: 3px solid var(--obmc-blue); }
+        .nav-link { color: var(--obmc-blue) !important; font-weight: 600; cursor: pointer; }
+        .nav-link:hover { color: var(--accent-blue) !important; }
+        
+       
+        .page-section { display: none; padding: 60px 0; min-height: 80vh; }
+        .active-section { display: block; }
+        
+       
+        .card-custom { border: none; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: white; }
+       
+
+        .sidebar-blue { background-color: var(--obmc-blue); color: white; border-radius: 15px 0 0 15px; padding: 30px; }
+        .badge-cat { background-color: #e7f1ff; color: #007bff; border-radius: 20px; padding: 5px 15px; }
+        
+       
+        #gwa_result_card { display: none; border-top: 8px solid var(--accent-blue); }
+        .gwa-display { font-size: 5rem; font-weight: 800; color: var(--accent-blue); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary">OBMC PORTAL</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" onclick="showSection('home')">Home</a>
+                <a class="nav-link" onclick="showSection('gwa')">GWA Calculator</a>
+                <a class="nav-link" onclick="showSection('clubs')">Club Directory</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="page-section active-section">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-md-9">
+                    <img src="https://cdn-icons-png.flaticon.com/512/167/167756.png" width="100" class="mb-4 opacity-75">
+                    <h1 class="display-4 fw-bold text-dark">Welcome to O.B. Montessori Center</h1>
+                    <p class="lead text-primary fw-bold mt-2">Philippines</p>
+                    <p class="lead text-secondary mt-4 px-md-5">We are a progressive pre-k to 12 co-educational school, offering a viable alternative to international schools. At OBMC, we blend tradition and innovation to prepare a child for life.</p>
+                    <div class="card card-custom p-4 mt-5 bg-white border-start border-primary border-5">
+                        <p class="fs-5 m-0 italic">"Our mission is to transform our students into self-developing and productive individuals who can succeed, direct, and influence the future of an ever-changing world."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gwa" class="page-section">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold text-primary">Academic Grade Calculator</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-5">
+                    <div class="card card-custom p-4">
+                        <div class="row g-2 mb-3">
+                            <div class="col"><input type="text" id="first_name" class="form-control" placeholder="First Name"></div>
+                            <div class="col"><input type="text" id="last_name" class="form-control" placeholder="Last Name"></div>
+                        </div>
+                        <div class="mb-2"><label class="small fw-bold">Science</label><input type="number" id="science_grade" class="form-control" value="0"></div>
+                        <div class="mb-2"><label class="small fw-bold">Math</label><input type="number" id="math_grade" class="form-control" value="0"></div>
+                        <div class="mb-2"><label class="small fw-bold">English</label><input type="number" id="english_grade" class="form-control" value="0"></div>
+                        <div class="mb-2"><label class="small fw-bold">Filipino</label><input type="number" id="filipino_grade" class="form-control" value="0"></div>
+                        <div class="mb-2"><label class="small fw-bold">ICT</label><input type="number" id="ict_grade" class="form-control" value="0"></div>
+                        <div class="mb-4"><label class="small fw-bold">PE</label><input type="number" id="pe_grade" class="form-control" value="0"></div>
+                        <button py-click="general_weighted_average" class="btn btn-primary w-100 py-3 fw-bold">Generate Report</button>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div id="gwa_result_card" class="card card-custom p-5 text-center">
+                        <h6 class="text-uppercase text-muted fw-bold">Official Grade Report</h6>
+                        <hr>
+                        <h3 id="res_full_name" class="text-dark my-4">---</h3>
+                        <div class="bg-light rounded p-4">
+                            <p class="mb-0 text-secondary fw-bold">Weighted Average</p>
+                            <h1 id="res_gwa_value" class="gwa-display">0.00</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="clubs" class="page-section">
+        <div class="container">
+            <div class="card card-custom overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-4 sidebar-blue">
+                        <h3 class="fw-bold">Club Directory</h3>
+                        <p class="opacity-75 mb-5">Access meeting times and locations for student organizations.</p>
+                        <label class="small text-uppercase mb-2">Select Club:</label>
+                        <select id="club_select" class="form-select mb-4 py-2">
+                            <option value="">-- Choose One --</option>
+                            <option value="Marching Band">Marching Band</option>
+                            <option value="Glee Club">Glee Club</option>
+                            <option value="Math Club">Math Club</option>
+                            <option value="Science Club">Science Club</option>
+                            <option value="Volleyball">Volleyball Varsity</option>
+                        </select>
+                        <button py-click="show_club_info" class="btn btn-light w-100 py-2 fw-bold text-primary">View Club Info</button>
+                    </div>
+                    <div class="col-md-8 p-5 bg-white">
+                        <div id="welcome_msg" class="text-center py-5">
+                            <h4 class="text-muted opacity-50">Please select an organization to view details.</h4>
+                        </div>
+                        <div id="club_display" style="display:none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h1 id="out_name" class="text-primary fw-bold"></h1>
+                                <span id="out_cat" class="badge-cat fw-bold"></span>
+                            </div>
+                            <p id="out_desc" class="fs-5 text-secondary italic mb-4"></p>
+                            <div class="row g-3">
+                                <div class="col-6 border-start border-info border-3 ps-3">
+                                    <label class="small text-muted text-uppercase">Moderator</label>
+                                    <p id="out_mod" class="fw-bold"></p>
+                                </div>
+                                <div class="col-6 border-start border-info border-3 ps-3">
+                                    <label class="small text-muted text-uppercase">Schedule</label>
+                                    <p id="out_time" class="fw-bold"></p>
+                                </div>
+                                <div class="col-6 border-start border-info border-3 ps-3">
+                                    <label class="small text-muted text-uppercase">Venue</label>
+                                    <p id="out_loc" class="fw-bold"></p>
+                                </div>
+                                <div class="col-6 border-start border-info border-3 ps-3">
+                                    <label class="small text-muted text-uppercase">Member Count</label>
+                                    <p id="out_mem" class="fw-bold"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active-section');
+            });
+            document.getElementById(sectionId).classList.add('active-section');
+        }
+    </script>
+
+    <script type="py" src="main7.py" config='{"files":["main7.py"]}'></script>
+
+</body>
+</html>
